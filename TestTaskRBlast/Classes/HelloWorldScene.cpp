@@ -24,6 +24,9 @@
 
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
+#include "ui/CocosGUI.h"
+#include "ButtonCustom.h"
+#include "ButtonCustomLong.h"
 
 USING_NS_CC;
 
@@ -42,79 +45,32 @@ static void problemLoading(const char* filename)
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
-    //////////////////////////////
-    // 1. super init first
-    if ( !Scene::init() )
-    {
-        return false;
-    }
+    auto idleSprite = Sprite::create("CloseNormal.png");
+    auto pushSprite = Sprite::create("CloseSelected.png");
+    auto safeSprite = Sprite::create("SafeButton.png");
 
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    auto button = ButtonCustom::create({ 100,100 }, { 300, 300 });
+    button->setPosition(Vec2(150, 250));
+    button->addElement(idleSprite, { ButtonState::Idle });
+    button->addElement(pushSprite, { ButtonState::Pushed });
+    button->addElement(safeSprite, { ButtonState::Dragout });
 
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
+    addChild(button);
 
-    // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
-                                           "CloseNormal.png",
-                                           "CloseSelected.png",
-                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
+    auto idleSprite2 = Sprite::create("CloseNormal.png");
+    auto pushSprite2 = Sprite::create("CloseSelected.png");
+    auto safeSprite2 = Sprite::create("SafeButton.png");
+    auto longPushSprite = Sprite::create("LongPush.png");
 
-    if (closeItem == nullptr ||
-        closeItem->getContentSize().width <= 0 ||
-        closeItem->getContentSize().height <= 0)
-    {
-        problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
-    }
-    else
-    {
-        float x = origin.x + visibleSize.width - closeItem->getContentSize().width/2;
-        float y = origin.y + closeItem->getContentSize().height/2;
-        closeItem->setPosition(Vec2(x,y));
-    }
+    auto buttonLongPush = ButtonCustomLong::create({ 100,100 }, { 300, 300 }, 1.0f);
+    buttonLongPush->setPosition(Vec2(150, 150));
+    buttonLongPush->addElement(idleSprite2, { ButtonState::Idle });
+    buttonLongPush->addElement(pushSprite2, { ButtonState::Pushed });
+    buttonLongPush->addElement(safeSprite2, { ButtonState::Dragout });
+    buttonLongPush->addElement(longPushSprite, { ButtonState::LongPush });
 
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
+    addChild(buttonLongPush);
 
-    /////////////////////////////
-    // 3. add your codes below...
-
-    // add a label shows "Hello World"
-    // create and initialize a label
-
-    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-    if (label == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                origin.y + visibleSize.height - label->getContentSize().height));
-
-        // add the label as a child to this layer
-        this->addChild(label, 1);
-    }
-
-    // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
-    if (sprite == nullptr)
-    {
-        problemLoading("'HelloWorld.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
-
-        // add the sprite as a child to this layer
-        this->addChild(sprite, 0);
-    }
     return true;
 }
 
